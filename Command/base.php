@@ -1,16 +1,18 @@
 <?php
 
-$baseDir = dirname(dirname(__FILE__));
-$without = array(dirname(__FILE__));
+define('WEB_ROOT', 'http://gvo.cbo.com.tw/');
+define('BASE_DIR', dirname(dirname(__FILE__)));
 
-$requireList = getAllPhpFiles($baseDir, $without);
+$without     = array(dirname(__FILE__));
+$requireList = getAllPhpFiles(BASE_DIR, $without);
 
 foreach ($requireList as $file) {
     require_once($file);
 }
 
-function getAllPhpFiles($dir, $without = array()) {
-    $list = array();
+function getAllPhpFiles($dir, $without = array())
+{
+    $list    = array();
     $scanRes = scandir($dir);
     foreach ($scanRes as $k => $v) {
         if (preg_match('/^\.\S*$/', $v)) {
