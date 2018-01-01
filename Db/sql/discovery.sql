@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `discovery` (
     `card_type` varchar(50) NOT NULL DEFAULT '' COMMENT '卡片类型',
     `card_level` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '卡片等级',
     `card_experience` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '卡片经验',
-    `discoverd_status` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '是否已发现',
+    `quest_ids` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '对应任务id',
     `desc_tc` varchar(1023) NOT NULL DEFAULT '' COMMENT '发现物描述（繁体）',
     `desc_sc` varchar(1023) NOT NULL DEFAULT '' COMMENT '发现物描述（简体）',
     PRIMARY KEY (`id`),

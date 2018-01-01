@@ -37,13 +37,14 @@ class DiscoveryList extends Base
 
         $discoveryList = array();
 
+        $questList = array();
         foreach ($trNodes as $trNode) {
-            $spanNodes     = $trNode->getElementsByTagName('span');
             $discoveryInfo = array();
+
+            $spanNodes = $trNode->getElementsByTagName('span');
             foreach ($spanNodes as $spanNode) {
                 $attr  = $spanNode->getAttribute('id');
                 $value = trim($spanNode->nodeValue);
-                echo $value."\n";
 
                 if (preg_match('/ctl00_CP1_GridView發現物_\S+LName/', $attr)) {
                     $discoveryInfo['name'] = $value;
@@ -62,10 +63,30 @@ class DiscoveryList extends Base
                     $discoveryInfo['card_experience'] = $value;
                 }
             }
+
+            $tableNodes = $trNode->getElementsByTagName('table');
+            foreach ($tableNodes as $tableNode) {
+                $aNodes = $tableNode->getElementsByTagName('a');
+                foreach ($aNodes as $aNode) {
+                    $href = $aNode->getAttribute('href');
+                    if (preg_match('/adv_missionDetail.aspx\?MID=(\d+)/', $href, $matches)) {
+                        $questId                      = $matches[1];
+                        $discoveryInfo['quest_ids'][] = $questId;
+
+                        preg_match('/\S+-(\S+)/', $aNode->nodeValue, $matches);
+                        $questList[$questId] = $matches[1];
+                    }
+                }
+            }
+
             if (empty($discoveryInfo['name'])) {
                 continue;
             }
-            print_r($discoveryInfo);exit;
+
         }
+        print_r($questList);
+        exit;
+        print_r($discoveryInfo);
+        exit;
     }
 }
