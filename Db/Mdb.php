@@ -12,8 +12,8 @@ class Mdb
 
     public function __construct()
     {
-        $this->db = \odbc_connect("ship", "", "");
-        // $this->db = \odbc_connect($this->dbName, $this->user, $this->pwd);
+        // $this->db = \odbc_connect("ship", "", "");
+        $this->db = \odbc_connect($this->dbName, $this->user, $this->pwd);
     }
 
     public function query($sql)
