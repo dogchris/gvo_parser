@@ -11,14 +11,36 @@ abstract class Base
     protected $sourceDir;
 
     // 值类型定义
-    const VALUE_TYPE_STRING = 0;    // 字符串
-    const VALUE_TYPE_ARRAY  = 1;    // 数组
-    const VALUE_TYPE_NODES  = 2;    // 节点对象数组
+    const VALUE_TYPE_STRING   = 0;    // 字符串
+    const VALUE_TYPE_ARRAY    = 1;    // 数组
+    const VALUE_TYPE_ONE_NODE = 2;    // 节点对象
+    const VALUE_TYPE_NODES    = 3;    // 节点对象数组
 
     // 值得解析类型
     const VALUE_FILTER_TYPE_ORIGIN      = 0;    // 原始值
     const VALUE_FILTER_TYPE_REG_REPLACE = 1;    // 正则替换
     const VALUE_FILTER_TYPE_REG_MATCH   = 2;    // 正则匹配
+
+    public function run()
+    {
+        $fileList = $this->getFileList();
+
+        foreach ($fileList as $file) {
+            $data = $this->parseFile($file);
+            print_r($data);exit;
+            $this->formatData($data);
+        }
+    }
+
+    protected function formatData($data)
+    {
+    }
+
+    protected function parseFile($file)
+    {
+        $node = $this->loadFile($file)->documentElement;
+        return $data = $this->parse($node);
+    }
 
     protected function loadFile($fileName)
     {
@@ -58,6 +80,12 @@ abstract class Base
                         case self::VALUE_TYPE_ARRAY:
                             $res[$conf['key']][] = $this->valueFilter($value, $conf);
                             break;
+                        case self::VALUE_TYPE_ONE_NODE:
+                            $childRes = $this->parse($tagNode, $conf['id']);
+                            if (!empty($childRes)) {
+                                $res[$conf['key']] = $childRes;
+                            }
+                            break;
                         case self::VALUE_TYPE_NODES:
                             $childRes = $this->parse($tagNode, $conf['id']);
                             if (!empty($childRes)) {
@@ -67,28 +95,6 @@ abstract class Base
                         default:
                             $res[$conf['key']] = $this->valueFilter($value, $conf);
                     }
-                }
-            }
-        }
-
-        return $res;
-    }
-
-    private function parseNode(\DOMElement $node, $parent)
-    {
-        $configs  = $this->getConf($parent);
-        $tagNodes = $node->getElementsByTagName($tagName);
-
-        $res = array();
-        foreach ($tagNodes as $tagNode) {
-            foreach ($configs as $conf) {
-                $attr  = $tagNode->getAttribute($conf['attr']);
-                $value = $conf['v_attr'] ? $tagNode->getAttribute($conf['v_attr']) : $tagNode->nodeValue;
-
-                if (preg_match("/{$conf['pattern']}/", $attr)) {
-                    $res[$conf['key']] = trim($value);
-                    $res[$conf['key']] = $this->valueFilter($value, $conf);
-                    break;
                 }
             }
         }
@@ -124,6 +130,11 @@ abstract class Base
         return $ret;
     }
 
+    /**
+     * 获取当前节点的解析配置
+     * @param int $parent
+     * @return array
+     */
     private function getConf($parent = 0)
     {
         $mysql = new Mysql();
