@@ -10,10 +10,12 @@ abstract class Base
 
     public function __construct()
     {
-        $html = $this->pre . file_get_contents($this->seedFile);
-        $html = str_replace('<br>', "\n", $html);
+        if ($this->seedFile) {
+            $html = $this->pre . file_get_contents($this->seedFile);
+            $html = str_replace('<br>', "\n", $html);
 
-        $this->dom = new \DOMDocument('1.0', 'UTF-8');
-        $this->dom->loadHTML($html);
+            $this->dom = new \DOMDocument('1.0', 'UTF-8');
+            $this->dom->loadHTML($html);
+        }
     }
 }

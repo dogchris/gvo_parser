@@ -27,7 +27,6 @@ abstract class Base
 
         foreach ($fileList as $file) {
             $data = $this->parseFile($file);
-            print_r($data);exit;
             $this->formatData($data);
         }
     }
