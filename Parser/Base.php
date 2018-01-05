@@ -71,6 +71,7 @@ abstract class Base
                 $attr  = $tagNode->getAttribute($conf['attr']);
                 $value = $conf['v_attr'] ? $tagNode->getAttribute($conf['v_attr']) : $tagNode->nodeValue;
 
+                $breakFlag = false;
                 if (preg_match("/{$conf['pattern']}/", $attr)) {
                     switch ($conf['v_type']) {
                         case self::VALUE_TYPE_STRING:
@@ -84,6 +85,7 @@ abstract class Base
                             if (!empty($childRes)) {
                                 $res[$conf['key']] = $childRes;
                             }
+                            $breakFlag = true;
                             break;
                         case self::VALUE_TYPE_NODES:
                             $childRes = $this->parse($tagNode, $conf['id']);
@@ -94,6 +96,10 @@ abstract class Base
                         default:
                             $res[$conf['key']] = $this->valueFilter($value, $conf);
                     }
+                }
+
+                if ($breakFlag) {
+                    break;
                 }
             }
         }

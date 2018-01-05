@@ -9,6 +9,6 @@ class DiscoveryList extends Base
 
     protected function formatData($data)
     {
-
+        print_r($data);exit;
     }
 }
